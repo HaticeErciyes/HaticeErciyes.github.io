@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drawer Zen – Challenge code</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<style>
+  body { font-family: -apple-system, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #222; line-height: 1.55; }
+  a { color: #0a66c2; }
+  nav { margin-bottom: 2rem; }
+  .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 2.4rem; font-weight: 700; letter-spacing: 0.12em;
+          text-align: center; padding: 1rem 0.5rem; margin: 1.5rem 0 1rem; background: #f4efe4; border-radius: 16px; word-break: break-all;
+          user-select: all; -webkit-user-select: all; }
+  button { display: block; width: 100%; font: inherit; font-size: 1.15rem; font-weight: 600; padding: 0.9rem; border: 0; border-radius: 14px;
+           background: #e6a94f; color: #2b2116; cursor: pointer; }
+  button:active { opacity: 0.8; }
+  .done { text-align: center; min-height: 1.6em; color: #3d6b3a; margin: 0.6rem 0 0; }
+  ol { padding-left: 1.3rem; }
+  .missing { display: none; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1c1a17; color: #eee6d8; }
+    a { color: #8cb8ff; }
+    .code { background: #2c2823; }
+    .done { color: #9fd49a; }
+  }
+</style>
+</head>
+<body>
+<nav><a href="../">Drawer Zen</a></nav>
+<h1 id="title">A friend's challenge</h1>
+<p id="lead">Your friend tidied a drawer in Drawer Zen and sent you this code.</p>
+<div class="code" id="code" aria-live="polite">DZ-·······</div>
+<button type="button" id="copy">Copy code</button>
+<p class="done" id="done" role="status"></p>
+<ol id="steps">
+  <li>Open Drawer Zen.</li>
+  <li>Tap the level title (or Settings → Levels), then <b>Enter code</b>.</li>
+  <li>Paste the code and tap <b>Play</b>.</li>
+</ol>
+<p id="calm">No timer, no reward, nothing to buy: just the same drawer, tidied your own way.</p>
+<p class="missing" id="missing">This link has no code in it. Ask your friend to send it again.</p>
+
+<script>
+(function () {
+  var tr = (navigator.language || "").toLowerCase().indexOf("tr") === 0;
+  var text = tr ? {
+    lang: "tr",
+    title: "Arkadaşından bir meydan okuma",
+    lead: "Arkadaşın Drawer Zen'de bir çekmeceyi topladı ve sana bu kodu gönderdi.",
+    copy: "Kodu kopyala",
+    copied: "Kopyalandı. Şimdi Drawer Zen'i aç.",
+    manual: "Kodu basılı tutup kopyalayabilirsin.",
+    steps: ["Drawer Zen'i aç.", "Bölüm başlığına (ya da Ayarlar → Bölümler) dokun, sonra <b>Kod gir</b>.", "Kodu yapıştır ve <b>Oyna</b>'ya dokun."],
+    calm: "Sayaç yok, ödül yok, satın alınacak bir şey yok: aynı çekmece, senin düzeninle.",
+    missing: "Bu bağlantıda kod yok. Arkadaşından bir kez daha göndermesini iste.",
+    page: "Drawer Zen – Meydan okuma kodu"
+  } : {
+    lang: "en",
+    title: "A friend's challenge",
+    lead: "Your friend tidied a drawer in Drawer Zen and sent you this code.",
+    copy: "Copy code",
+    copied: "Copied. Now open Drawer Zen.",
+    manual: "Press and hold the code to copy it.",
+    steps: ["Open Drawer Zen.", "Tap the level title (or Settings → Levels), then <b>Enter code</b>.", "Paste the code and tap <b>Play</b>."],
+    calm: "No timer, no reward, nothing to buy: just the same drawer, tidied your own way.",
+    missing: "This link has no code in it. Ask your friend to send it again.",
+    page: "Drawer Zen – Challenge code"
+  };
+  function $(id) { return document.getElementById(id); }
+  document.documentElement.lang = text.lang;
+  document.title = text.page;
+  $("title").textContent = text.title;
+  $("lead").textContent = text.lead;
+  $("copy").textContent = text.copy;
+  $("calm").textContent = text.calm;
+  $("missing").textContent = text.missing;
+  var items = $("steps").getElementsByTagName("li");
+  for (var i = 0; i < items.length; i++) items[i].innerHTML = text.steps[i];
+
+  // The code: "DZ-" and seven characters of Crockford base 32 (the game checks it properly).
+  var raw = new URLSearchParams(location.search).get("k") || "";
+  var body = raw.toUpperCase().replace(/[\s\-‐‑–—_]/g, "").replace(/O/g, "0").replace(/[IL]/g, "1");
+  if (body.length === 9 && body.indexOf("DZ") === 0) body = body.substring(2);
+  var ok = /^[0-9A-HJKMNP-TV-Z]{7}$/.test(body);
+  var code = "DZ-" + body;
+  if (!ok) {
+    $("code").style.display = "none";
+    $("copy").style.display = "none";
+    $("steps").style.display = "none";
+    $("missing").style.display = "block";
+    return;
+  }
+  $("code").textContent = code;
+  $("copy").addEventListener("click", function () {
+    function said(words) { $("done").textContent = words; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () { said(text.copied); }, function () { select(); said(text.manual); });
+    } else { select(); said(text.manual); }
+  });
+  function select() {
+    var range = document.createRange();
+    range.selectNodeContents($("code"));
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+})();
+</script>
+</body>
+</html>
