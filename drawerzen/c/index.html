@@ -36,7 +36,7 @@
 <p class="done" id="done" role="status"></p>
 <ol id="steps">
   <li>Open Drawer Zen.</li>
-  <li>Tap the level title (or Settings → Levels), then <b>Enter code</b>.</li>
+  <li>Tap <b>Levels</b>, then <b>Extras</b> → <b>Enter code</b>.</li>
   <li>Paste the code and tap <b>Play</b>.</li>
 </ol>
 <p id="calm">No timer, no reward, nothing to buy: just the same drawer, tidied your own way.</p>
@@ -44,30 +44,123 @@
 
 <script>
 (function () {
-  var tr = (navigator.language || "").toLowerCase().indexOf("tr") === 0;
-  var text = tr ? {
-    lang: "tr",
-    title: "Arkadaşından bir meydan okuma",
-    lead: "Arkadaşın Drawer Zen'de bir çekmeceyi topladı ve sana bu kodu gönderdi.",
-    copy: "Kodu kopyala",
-    copied: "Kopyalandı. Şimdi Drawer Zen'i aç.",
-    manual: "Kodu basılı tutup kopyalayabilirsin.",
-    steps: ["Drawer Zen'i aç.", "Bölüm başlığına (ya da Ayarlar → Bölümler) dokun, sonra <b>Kod gir</b>.", "Kodu yapıştır ve <b>Oyna</b>'ya dokun."],
-    calm: "Sayaç yok, ödül yok, satın alınacak bir şey yok: aynı çekmece, senin düzeninle.",
-    missing: "Bu bağlantıda kod yok. Arkadaşından bir kez daha göndermesini iste.",
-    page: "Drawer Zen – Meydan okuma kodu"
-  } : {
-    lang: "en",
-    title: "A friend's challenge",
-    lead: "Your friend tidied a drawer in Drawer Zen and sent you this code.",
-    copy: "Copy code",
-    copied: "Copied. Now open Drawer Zen.",
-    manual: "Press and hold the code to copy it.",
-    steps: ["Open Drawer Zen.", "Tap the level title (or Settings → Levels), then <b>Enter code</b>.", "Paste the code and tap <b>Play</b>."],
-    calm: "No timer, no reward, nothing to buy: just the same drawer, tidied your own way.",
-    missing: "This link has no code in it. Ask your friend to send it again.",
-    page: "Drawer Zen – Challenge code"
+  // The phone's language picks the words (the game's ten); the steps name its buttons exactly as the game shows them.
+  var texts = {
+    tr: {
+      title: "Arkadaşından bir meydan okuma",
+      lead: "Arkadaşın Drawer Zen'de bir çekmeceyi topladı ve sana bu kodu gönderdi.",
+      copy: "Kodu kopyala",
+      copied: "Kopyalandı. Şimdi Drawer Zen'i aç.",
+      manual: "Kodu basılı tutup kopyalayabilirsin.",
+      steps: ["Drawer Zen'i aç.", "<b>Bölümler</b>'e dokun, sonra <b>Ekstralar</b> → <b>Kod gir</b>.", "Kodu yapıştır ve <b>Oyna</b>'ya dokun."],
+      calm: "Sayaç yok, ödül yok, satın alınacak bir şey yok: aynı çekmece, senin düzeninle.",
+      missing: "Bu bağlantıda kod yok. Arkadaşından bir kez daha göndermesini iste.",
+      page: "Drawer Zen – Meydan okuma kodu"
+    },
+    en: {
+      title: "A friend's challenge",
+      lead: "Your friend tidied a drawer in Drawer Zen and sent you this code.",
+      copy: "Copy code",
+      copied: "Copied. Now open Drawer Zen.",
+      manual: "Press and hold the code to copy it.",
+      steps: ["Open Drawer Zen.", "Tap <b>Levels</b>, then <b>Extras</b> → <b>Enter code</b>.", "Paste the code and tap <b>Play</b>."],
+      calm: "No timer, no reward, nothing to buy: just the same drawer, tidied your own way.",
+      missing: "This link has no code in it. Ask your friend to send it again.",
+      page: "Drawer Zen – Challenge code"
+    },
+    es: {
+      title: "El reto de un amigo",
+      lead: "Tu amigo ordenó un cajón en Drawer Zen y te envió este código.",
+      copy: "Copiar código",
+      copied: "Copiado. Ahora abre Drawer Zen.",
+      manual: "Mantén pulsado el código para copiarlo.",
+      steps: ["Abre Drawer Zen.", "Toca <b>Niveles</b>, luego <b>Extras</b> → <b>Introducir código</b>.", "Pega el código y toca <b>Jugar</b>."],
+      calm: "Sin cronómetro, sin premio, nada que comprar: el mismo cajón, ordenado a tu manera.",
+      missing: "Este enlace no tiene código. Pídele a tu amigo que te lo envíe de nuevo.",
+      page: "Drawer Zen – Código de reto"
+    },
+    "pt-BR": {
+      title: "Um desafio de um amigo",
+      lead: "Seu amigo arrumou uma gaveta no Drawer Zen e te enviou este código.",
+      copy: "Copiar código",
+      copied: "Copiado. Agora abra o Drawer Zen.",
+      manual: "Toque e segure o código para copiá-lo.",
+      steps: ["Abra o Drawer Zen.", "Toque em <b>Níveis</b>, depois em <b>Extras</b> → <b>Inserir código</b>.", "Cole o código e toque em <b>Jogar</b>."],
+      calm: "Sem cronômetro, sem recompensa, nada para comprar: só a mesma gaveta, arrumada do seu jeito.",
+      missing: "Este link não tem nenhum código. Peça para seu amigo enviar de novo.",
+      page: "Drawer Zen – Código de desafio"
+    },
+    de: {
+      title: "Die Herausforderung eines Freundes",
+      lead: "Ein Freund hat in Drawer Zen eine Schublade aufgeräumt und dir diesen Code geschickt.",
+      copy: "Code kopieren",
+      copied: "Kopiert. Öffne jetzt Drawer Zen.",
+      manual: "Halte den Code gedrückt, um ihn zu kopieren.",
+      steps: ["Öffne Drawer Zen.", "Tippe auf <b>Levels</b>, dann auf <b>Extras</b> → <b>Code eingeben</b>.", "Füge den Code ein und tippe auf <b>Spielen</b>."],
+      calm: "Kein Timer, keine Belohnung, nichts zu kaufen: nur dieselbe Schublade, auf deine Art aufgeräumt.",
+      missing: "Dieser Link enthält keinen Code. Bitte deinen Freund, ihn noch einmal zu schicken.",
+      page: "Drawer Zen – Herausforderungscode"
+    },
+    fr: {
+      title: "Le défi d'un ami",
+      lead: "Ton ami a rangé un tiroir dans Drawer Zen et t'a envoyé ce code.",
+      copy: "Copier le code",
+      copied: "Copié. Ouvre maintenant Drawer Zen.",
+      manual: "Appuie longuement sur le code pour le copier.",
+      steps: ["Ouvre Drawer Zen.", "Touche <b>Niveaux</b>, puis <b>Bonus</b> → <b>Entrer un code</b>.", "Colle le code et touche <b>Jouer</b>."],
+      calm: "Pas de chrono, pas de récompense, rien à acheter : juste le même tiroir, rangé à ta façon.",
+      missing: "Ce lien ne contient pas de code. Demande à ton ami de le renvoyer.",
+      page: "Drawer Zen – Code de défi"
+    },
+    ja: {
+      title: "友だちからのチャレンジ",
+      lead: "友だちが Drawer Zen で引き出しを片づけて、このコードを送ってくれました。",
+      copy: "コードをコピー",
+      copied: "コピーしました。Drawer Zen を開いてください。",
+      manual: "コードを長押ししてコピーしてください。",
+      steps: ["Drawer Zen を開きます。", "<b>ステージ選択</b>をタップし、<b>おまけ</b> → <b>コード入力</b>をタップします。", "コードを貼り付けて<b>プレイ</b>をタップします。"],
+      calm: "タイマーも報酬もなく、買うものもありません。同じ引き出しを、あなたのやり方で。",
+      missing: "このリンクにはコードがありません。友だちにもう一度送ってもらってください。",
+      page: "Drawer Zen – チャレンジコード"
+    },
+    ko: {
+      title: "친구의 도전",
+      lead: "친구가 Drawer Zen에서 서랍을 정리하고 이 코드를 보냈어요.",
+      copy: "코드 복사",
+      copied: "복사했어요. 이제 Drawer Zen을 열어 주세요.",
+      manual: "코드를 길게 눌러 복사하세요.",
+      steps: ["Drawer Zen을 엽니다.", "<b>레벨 선택</b>을 누른 다음 <b>보너스</b> → <b>코드 입력</b>을 누릅니다.", "코드를 붙여넣고 <b>플레이</b>를 누릅니다."],
+      calm: "타이머도, 보상도, 살 것도 없어요. 같은 서랍을 나만의 방식으로 정리하세요.",
+      missing: "이 링크에는 코드가 없어요. 친구에게 다시 보내 달라고 하세요.",
+      page: "Drawer Zen – 도전 코드"
+    },
+    id: {
+      title: "Tantangan dari teman",
+      lead: "Temanmu merapikan laci di Drawer Zen dan mengirimimu kode ini.",
+      copy: "Salin kode",
+      copied: "Tersalin. Sekarang buka Drawer Zen.",
+      manual: "Tekan lama kode untuk menyalinnya.",
+      steps: ["Buka Drawer Zen.", "Ketuk <b>Pilih level</b>, lalu <b>Ekstra</b> → <b>Masukkan kode</b>.", "Tempel kode lalu ketuk <b>Main</b>."],
+      calm: "Tanpa timer, tanpa hadiah, tidak ada yang perlu dibeli: hanya laci yang sama, dirapikan dengan caramu.",
+      missing: "Tautan ini tidak berisi kode. Minta temanmu mengirimnya lagi.",
+      page: "Drawer Zen – Kode tantangan"
+    },
+    it: {
+      title: "La sfida di un amico",
+      lead: "Un tuo amico ha riordinato un cassetto in Drawer Zen e ti ha inviato questo codice.",
+      copy: "Copia codice",
+      copied: "Copiato. Ora apri Drawer Zen.",
+      manual: "Tieni premuto il codice per copiarlo.",
+      steps: ["Apri Drawer Zen.", "Tocca <b>Livelli</b>, poi <b>Extra</b> → <b>Inserisci codice</b>.", "Incolla il codice e tocca <b>Gioca</b>."],
+      calm: "Nessun timer, nessuna ricompensa, niente da comprare: solo lo stesso cassetto, riordinato a modo tuo.",
+      missing: "Questo link non contiene nessun codice. Chiedi al tuo amico di inviarlo di nuovo.",
+      page: "Drawer Zen – Codice sfida"
+    }
   };
+  var base = (navigator.language || "").toLowerCase().split("-")[0];
+  var lang = base === "pt" ? "pt-BR" : texts.hasOwnProperty(base) ? base : "en";
+  var text = texts[lang];
+  text.lang = lang;
   function $(id) { return document.getElementById(id); }
   document.documentElement.lang = text.lang;
   document.title = text.page;
